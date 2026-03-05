@@ -29,14 +29,14 @@ import sys
 from FileDownloader import download_kernel_packages
 
 from ShellUtils import run_command
-from SupportedVersions import dkms_acpi_enabled_strings
-from SupportedVersions import get_os_version
-from SupportedVersions import get_remote_kernel_modules_path
-from SupportedVersions import get_remote_kernel_headers_path
-from SupportedVersions import get_kernel_modules_filename
-from SupportedVersions import get_kernel_headers_filename
-from SupportedVersions import kernel_modules_packages
-from SupportedVersions import kernel_headers_packages
+from DkmsSupportedVersions import dkms_acpi_enabled_strings
+from DkmsSupportedVersions import get_os_version
+from DkmsSupportedVersions import get_remote_kernel_modules_path
+from DkmsSupportedVersions import get_remote_kernel_headers_path
+from DkmsSupportedVersions import get_kernel_modules_filename
+from DkmsSupportedVersions import get_kernel_headers_filename
+from DkmsSupportedVersions import kernel_modules_packages
+from DkmsSupportedVersions import kernel_headers_packages
 
 def prep_steamos(dry_run=True):
     print('\nDisabling SteamOS read-only mode.')

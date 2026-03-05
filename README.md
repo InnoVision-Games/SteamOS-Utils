@@ -1,4 +1,4 @@
-# Command line tool for automating customization and configuration of Legion Go devices running SteamOS
+# Command line tool for automating customization and configuration of handhelds & PCs running SteamOS
 
 ## Enabling Linux Dynamic Kernel Module Support ACPI calls
 
@@ -17,7 +17,7 @@ This script automates all of the above with a single command.
 The command is as follows:
 
 ```
-./LegionGoUtils.py --enable_acpi_calls
+./SteamOsUtils.py --enable_acpi_calls
 ```
 
 The command will take several minutes to run depending on your internect connection.
