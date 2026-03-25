@@ -28,29 +28,7 @@ import os
 import platform
 import sys
 
-os_remote_kernel_modules_path = {
-    'linux-neptune-611-6.11.11.valve24-2-x86_64.pkg.tar.zst' : 'jupiter-3.7/os/x86_64/',
-    'linux-neptune-611-6.11.11.valve26-1-x86_64.pkg.tar.zst' : 'jupiter-3.7/os/x86_64/',
-}
-
-os_remote_kernel_headers_path = {
-    'linux-neptune-611-headers-6.11.11.valve24-2-x86_64.pkg.tar.zst' : 'jupiter-3.7/os/x86_64/',
-    'linux-neptune-611-headers-6.11.11.valve26-1-x86_64.pkg.tar.zst' : 'jupiter-3.7/os/x86_64/',
-}
-
-kernel_modules_packages = [
-    'linux-neptune-611-6.11.11.valve24-2-x86_64.pkg.tar.zst',
-    'linux-neptune-611-6.11.11.valve26-1-x86_64.pkg.tar.zst',
-]
-
-kernel_headers_packages = [
-    'linux-neptune-611-headers-6.11.11.valve24-2-x86_64.pkg.tar.zst',
-    'linux-neptune-611-headers-6.11.11.valve26-1-x86_64.pkg.tar.zst',
-]
-
-dkms_acpi_enabled_strings = [
-    'acpi_call/1.2.2, 6.11.11-valve24-2-neptune-611-gfd0dd251480d, x86_64: installed',
-]
+from FileDownloader import VALVE_PUBLIC_MIRROR
 
 def get_os_version():
     temp = platform.release();
@@ -110,30 +88,14 @@ def get_kernel_headers_filename(os_version):
 
 def get_remote_kernel_modules_path(kernel_modules_filename):
     print('\nNow generating kernel_modules_filename: %s remote relative path...' % kernel_modules_filename)
-    remote_file_path = ''
-    try:
-        remote_file_path = os_remote_kernel_modules_path[kernel_modules_filename]
-    except KeyError:
-        print('\nError kernel_modules_filename: %s not found in lookup table!' % kernel_modules_filename)
-        sys.exit(-1)
-
-    remote_filename = os.path.join(remote_file_path, kernel_modules_filename)
-
+    remote_filename = os.path.join(VALVE_PUBLIC_MIRROR, kernel_modules_filename)
     print('Generated remote filename: %s.' % remote_filename)
 
     return remote_filename
 
 def get_remote_kernel_headers_path(kernel_headers_filename):
     print('\nNow generating kernel_headers_filename: %s remote relative path...' % kernel_headers_filename)
-    remote_file_path = ''
-    try:
-        remote_file_path = os_remote_kernel_headers_path[kernel_headers_filename]
-    except KeyError:
-        print('\nError filename: %s not found in lookup table!' % kernel_headers_filename)
-        sys.exit(-1)
-
-    remote_filename = os.path.join(remote_file_path, kernel_headers_filename)
-
+    remote_filename = os.path.join(VALVE_PUBLIC_MIRROR, kernel_headers_filename)
     print('Generated remote filename: %s.' % remote_filename)
 
     return remote_filename

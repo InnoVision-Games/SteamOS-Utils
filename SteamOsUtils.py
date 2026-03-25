@@ -33,7 +33,7 @@ from AcpiEnabler import check_dkms_acpi_calls_enabled
 from AcpiEnabler import enable_acpi_calls
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A set of tools for Legion Go devices running SteamOS')
+    parser = argparse.ArgumentParser(description='A set of tools for devices running SteamOS')
     parser.add_argument('-d', '--dry_run', action='store_true', help='Test the commands without executing them')
     parser.add_argument('-acpi', '--enable_acpi_calls', action='store_true', help='Enable Linux Dynamic Kernel Module Support ACPI calls')
     parser.add_argument('-check_acpi', '--check_dkms_acpi_calls_enabled', action='store_true', help='Check if Linux Dynamic Kernel Module Support ACPI calls are enabled')

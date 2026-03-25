@@ -24,13 +24,40 @@
     file: FileDownloader.py
 '''
 
-from ShellUtils import run_command
+import socket
+import sys
+import time
+import urllib.request
 
-def download_kernel_packages(kernel_modules_filename, kernel_headers_filename, dry_run=True):
-    steam_packages_url = 'https://steamdeck-packages.steamos.cloud/archlinux-mirror/'
-    kernel_modules_url = steam_packages_url + kernel_modules_filename
-    kernel_headers_url = steam_packages_url + kernel_headers_filename
+# Set the global default timeout for all socket operations to 10 seconds
+socket.setdefaulttimeout(10)
 
-    print('\nDownloading kernel modules and header packages.')
-    run_command(['wget', kernel_modules_url], dry_run)
-    run_command(['wget', kernel_headers_url], dry_run)
+# URL containing Valve's public mirror for SteamOS packages
+VALVE_PUBLIC_MIRROR = 'https://steamdeck-packages.steamos.cloud/archlinux-mirror/jupiter-main/os/x86_64/'
+
+# Function to show download progress
+def show_progress(block_num, block_size, total_size):
+    global start_time
+    if block_num == 0:
+        start_time = time.time()
+        return
+
+    duration = time.time() - start_time
+    progress_size = int(block_num * block_size)
+    speed = int(progress_size / (1024 * duration)) if duration > 0 else 0
+    percent = int(block_num * block_size * 100 / total_size) if total_size != -1 else 0
+
+    # Print progress on the same line using carriage return '\r'
+    sys.stdout.write(f"\r...{percent}% completed, {progress_size / (1024 * 1024):.2f} MB, {speed} KB/s, {int(duration)} seconds passed")
+    sys.stdout.flush()
+
+# Function that checks for and downloads a specified file.
+def check_mirror_and_download_package(filename):
+    print('\nChecking Valve mirror for package: %s ...' % filename)
+    try:
+        req = urllib.request.urlretrieve(url=VALVE_PUBLIC_MIRROR, filename=filename, reporthook=show_progress)
+        print('File: %s, was downloaded successfully' % filename)
+        return True
+    except Exception as e:
+        print('Error, file: %s, not found on Valve\'s mirror, with error:  %s' % str(e))
+        return False

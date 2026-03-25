@@ -26,17 +26,13 @@
 
 import sys
 
-from FileDownloader import download_kernel_packages
-
-from ShellUtils import run_command
-from DkmsSupportedVersions import dkms_acpi_enabled_strings
 from DkmsSupportedVersions import get_os_version
 from DkmsSupportedVersions import get_remote_kernel_modules_path
 from DkmsSupportedVersions import get_remote_kernel_headers_path
 from DkmsSupportedVersions import get_kernel_modules_filename
 from DkmsSupportedVersions import get_kernel_headers_filename
-from DkmsSupportedVersions import kernel_modules_packages
-from DkmsSupportedVersions import kernel_headers_packages
+from FileDownloader import check_mirror_and_download_package
+from ShellUtils import run_command
 
 def prep_steamos(dry_run=True):
     print('\nDisabling SteamOS read-only mode.')
@@ -101,10 +97,10 @@ def cleanup(kernel_modules_filename, kernel_headers_filename, dry_run=True):
     run_command(['rm', kernel_headers_filename], dry_run)
 
 def check_dkms_acpi_calls_enabled(dry_run):
-    result = run_command(['dkms' , 'status'])
-    #if result.stdout in dkms_acpi_enabled_strings:
-    #    print('Linux DKMS needed for ACPI calls ARE enabled.')
-    #    return True
+    result = run_command(['lsmod'])
+    if 'acpi_call' in result.stdout:
+        print('Linux DKMS needed for ACPI calls ARE enabled.')
+        return True
 
     #print('Linux DKMS needed for ACPI calls are NOT enabled.')
     return False
@@ -114,19 +110,16 @@ def enable_acpi_calls(dry_run):
     kernel_modules_filename = get_kernel_modules_filename(os_version)
     kernel_headers_filename = get_kernel_headers_filename(os_version)
 
-    if kernel_modules_filename not in kernel_modules_packages:
-        print('Attempting to install on an unsupported SteamOS version, now exiting!')
-        sys.exit(-1)
-    if kernel_headers_filename not in kernel_headers_packages:
-        print('Attempting to install on an unsupported SteamOS version, now exiting!')
-        sys.exit(-1)
-
-    print('\nNow enabling ACPI calls on SteamOS for Legion Go')
-
     # 1. Download the require kernel packages
-    remote_kernel_modules_filename = get_remote_kernel_modules_path(kernel_modules_filename)
-    remote_kernel_headers_filename = get_remote_kernel_headers_path(kernel_headers_filename)
-    download_kernel_packages(remote_kernel_modules_filename, remote_kernel_headers_filename, dry_run)
+    if not check_mirror_and_download_package(kernel_modules_filename):
+        print('The  SteamOS requested is not supported yet, please try again later or open a ticket')
+        sys.exit(-1)
+    if not check_mirror_and_download_package(kernel_headers_filename):
+        print('\nError kernel module package: %s not found on Valve\'s mirror.' % kernel_headers_filename)
+        print('Try again later or report an issue')
+        sys.exit(-1)
+
+    print('\nNow enabling ACPI calls on your current SteamOS installation')
 
     # 2. Prepare SteamOS and package manager for the installation
     prep_steamos(dry_run)
