@@ -27,8 +27,6 @@
 import sys
 
 from DkmsSupportedVersions import get_os_version
-from DkmsSupportedVersions import get_remote_kernel_modules_path
-from DkmsSupportedVersions import get_remote_kernel_headers_path
 from DkmsSupportedVersions import get_kernel_modules_filename
 from DkmsSupportedVersions import get_kernel_headers_filename
 from FileDownloader import check_mirror_and_download_package
